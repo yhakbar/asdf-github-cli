@@ -43,7 +43,17 @@ install_github_cli() {
     local archive_type=tar.gz
     ;;
   macOS)
-    local archive_type=zip
+    # Starting with v2.28.0, the macOS binaries are distributed as zip archives.
+    local major
+    local minor
+    major=$(echo "$version" | cut -d. -f1)
+    minor=$(echo "$version" | cut -d. -f2)
+
+    if [ "$major" -gt 2 ] || { [ "$major" -eq 2 ] && [ "$minor" -ge 28 ]; }; then
+      local archive_type=zip
+    else
+      local archive_type=tar.gz
+    fi
     ;;
   *)
     local archive_type=notset
